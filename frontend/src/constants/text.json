@@ -1,0 +1,37 @@
+{
+  "header": {
+    "title": "Rappi Analytics",
+    "logoAlt": "logo de rappi"
+  },
+  "navigation": {
+    "chat": "Chat",
+    "insights": "Insights Automáticos"
+  },
+  "chat": {
+    "initialMessage": "👋 ¡Hola! Soy Flash, tu asistente de métricas. Pregúntame lo que necesites y responderé usando la información disponible.",
+    "canceledMessage": "La respuesta ha sido cancelada por solicitud del usuario.",
+    "botConnectionError": "⚠️🤖 Error de conexión con el bot: ",
+    "noResponseFromModel": "No se recibió respuesta del modelo",
+    "serverError": "⚠️🗄️ Error del servidor: ",
+    "errorConnectingToServer": "Error al conectar con el servidor",
+    "inputPlaceholder": "Escribe tu pregunta...",
+    "sendButton": "Enviar",
+    "stopButton": "Pausar",
+    "generateHistoryButton": "Generar Historial",
+    "chartAlt": "Gráfico",
+    "expandedImageAlt": "Vista expandida",
+    "typingLabel": "El bot está escribiendo"
+  },
+  "insights": {
+    "title": "Insights Automáticos",
+    "subtitle": "Análisis de tendencias clave en métricas operativas",
+    "generateReportButton": "Generar Reporte",
+    "refreshButton": "Actualizar",
+    "generatingButton": "Generando...",
+    "loadingTitle": "Generando insights...",
+    "loadingSubtitle": "Esto puede tardar unos segundos",
+    "emptyTitle": "No hay insights disponibles",
+    "emptySubtitle": "Haz clic en \"Actualizar\" para generar insights",
+    "loadError": "Error al cargar insights: "
+  }
+}

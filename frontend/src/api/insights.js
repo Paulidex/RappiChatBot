@@ -1,29 +1,41 @@
 import { ENDPOINTS } from "../constants/endpoints";
 
-function transformInsight(rawInsight) {
-  return {
-    id: rawInsight.id,
-    title: rawInsight.titulo,
-    description: rawInsight.descripcion,
-    chartUrl: rawInsight.grafica,
-    error: rawInsight.error,
-  };
-}
-
 export async function fetchInsights() {
-  const response = await fetch(ENDPOINTS.insights, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-  });
+  const response = await fetch(ENDPOINTS.insights);
 
-  const data = await response.json();
-
-  if (data.error) {
-    throw new Error(data.error);
+  if (!response.ok) {
+    throw new Error("HTTP error! status: " + response.status);
   }
 
-  const rawInsights = data.insights || [];
-  const transformedInsights = rawInsights.map(transformInsight);
+  const data = await response.json();
+  const insightsData = data.insights_data || [];
+  const charts = data.chart_base64_list || [];
 
-  return transformedInsights;
+  return insightsData.map((insight, index) => ({
+    id: index,
+    title: insight.title,
+    description: insight.description,
+    category: insight.category,
+    severity: insight.severity,
+    recommendation: insight.recommendation,
+    chartUrl: charts[index] ? `data:image/png;base64,${charts[index]}` : null,
+    error: null,
+  }));
+}
+
+export async function generateReportPdf(insights) {
+  const response = await fetch(ENDPOINTS.reportPdf, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ insights }),
+  });
+
+  if (!response.ok) {
+    throw new Error("HTTP error! status: " + response.status);
+  }
+
+  const blob = await response.blob();
+  const url = URL.createObjectURL(blob);
+  window.open(url, "_blank");
+  setTimeout(() => URL.revokeObjectURL(url), 10000);
 }

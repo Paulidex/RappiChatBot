@@ -1,6 +1,6 @@
 import InsightCard from "./InsightCard";
 import { useInsights } from "../../hooks/useInsights";
-import { ENDPOINTS } from "../../constants/endpoints";
+import { generateReportPdf } from "../../api/insights";
 import spinnerSvg from "../../assets/spinner.svg?raw";
 import refreshSvg from "../../assets/refresh.svg?raw";
 import barChartSvg from "../../assets/bar-chart.svg?raw";
@@ -114,8 +114,8 @@ function InsightGrid({ insights }) {
 export default function InsightPanel({ visible }) {
   const { insights, isLoading, error, loadInsights } = useInsights(visible);
 
-  function handleGenerateReport() {
-    window.open(ENDPOINTS.generateReport, "_blank");
+  async function handleGenerateReport() {
+    await generateReportPdf(insights);
   }
 
   return (

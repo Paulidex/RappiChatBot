@@ -11,6 +11,7 @@ export default function ChatView({ visible }) {
     messagesEndRef,
     setInputText,
     sendMessage,
+    exportPdf,
   } = useChat();
 
   return (
@@ -29,6 +30,7 @@ export default function ChatView({ visible }) {
         isGenerating={isGenerating}
         onInputChange={setInputText}
         onSend={sendMessage}
+        onExportPdf={exportPdf}
       />
     </section>
   );

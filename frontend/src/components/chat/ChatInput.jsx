@@ -1,6 +1,5 @@
 import sendSvg from "../../assets/send.svg?raw";
 import stopSvg from "../../assets/stop.svg?raw";
-import { ENDPOINTS } from "../../constants/endpoints";
 import text from "../../constants/text.json";
 
 function autoResizeTextarea(textareaElement) {
@@ -8,7 +7,7 @@ function autoResizeTextarea(textareaElement) {
   textareaElement.style.height = textareaElement.scrollHeight + "px";
 }
 
-export default function ChatInput({ inputText, isGenerating, onInputChange, onSend }) {
+export default function ChatInput({ inputText, isGenerating, onInputChange, onSend, onExportPdf }) {
   function handleTextareaChange(changeEvent) {
     onInputChange(changeEvent.target.value);
     autoResizeTextarea(changeEvent.target);
@@ -36,7 +35,7 @@ export default function ChatInput({ inputText, isGenerating, onInputChange, onSe
   }
 
   function handleGeneratePdf() {
-    window.open(ENDPOINTS.generatePdf, "_blank");
+    onExportPdf();
   }
 
   let sendButtonStyles = "";

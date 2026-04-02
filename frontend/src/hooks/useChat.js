@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { askQuestion, stopGeneration } from "../api/chat";
+import { sendMessage, exportHistoryPdf } from "../api/chat";
 import text from "../constants/text.json";
 
 const INITIAL_MESSAGE = {
@@ -15,8 +15,8 @@ const CANCELLATION_MESSAGE = {
 function createBotMessage(apiResponse) {
   let content = "";
 
-  if (apiResponse.respuesta) {
-    content = apiResponse.respuesta;
+  if (apiResponse.bot_response) {
+    content = apiResponse.bot_response;
   } else {
     const errorDetail = apiResponse.error || text.chat.noResponseFromModel;
     content = text.chat.botConnectionError + " " + errorDetail;
@@ -25,7 +25,9 @@ function createBotMessage(apiResponse) {
   return {
     type: "bot",
     content: content,
-    chartUrl: apiResponse.grafica || null,
+    chartUrl: apiResponse.chart_base64
+      ? `data:image/png;base64,${apiResponse.chart_base64}`
+      : null,
   };
 }
 
@@ -38,6 +40,7 @@ function createServerErrorMessage(error) {
 }
 
 export function useChat() {
+  const [sessionId] = useState(() => crypto.randomUUID());
   const [messages, setMessages] = useState([{ ...INITIAL_MESSAGE, id: 1 }]);
   const [inputText, setInputText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -58,22 +61,15 @@ export function useChat() {
     });
   }
 
-  async function stopResponse() {
+  function stopResponse() {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
     }
-
-    try {
-      await stopGeneration();
-    } catch (error) {
-      console.error("Error stopping generation:", error);
-    } finally {
-      setIsTyping(false);
-      setIsGenerating(false);
-    }
+    setIsTyping(false);
+    setIsGenerating(false);
   }
 
-  async function sendMessage() {
+  async function handleSendMessage() {
     if (isGenerating) {
       stopResponse();
       return;
@@ -94,7 +90,7 @@ export function useChat() {
       const controller = new AbortController();
       abortControllerRef.current = controller;
 
-      const apiResponse = await askQuestion(question, controller.signal);
+      const apiResponse = await sendMessage(sessionId, question, controller.signal);
       appendMessage(createBotMessage(apiResponse));
     } catch (error) {
       const wasCanceled =
@@ -111,6 +107,10 @@ export function useChat() {
     }
   }
 
+  async function handleExportPdf() {
+    await exportHistoryPdf(sessionId);
+  }
+
   return {
     messages,
     inputText,
@@ -118,6 +118,7 @@ export function useChat() {
     isGenerating,
     messagesEndRef,
     setInputText,
-    sendMessage,
+    sendMessage: handleSendMessage,
+    exportPdf: handleExportPdf,
   };
 }

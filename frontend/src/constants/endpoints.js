@@ -1,9 +1,8 @@
-const API_BASE_URL = "http://127.0.0.1:8000";
+const API_BASE_URL = "http://127.0.0.1:8000/api/v1";
 
 export const ENDPOINTS = {
-  ask: `${API_BASE_URL}/preguntar`,
-  stop: `${API_BASE_URL}/detener`,
-  generatePdf: `${API_BASE_URL}/generar_pdf`,
-  insights: `${API_BASE_URL}/insights`,
-  generateReport: `${API_BASE_URL}/generar_reporte`,
+  chat: `${API_BASE_URL}/chat`,
+  chatExportPdf: (sessionId) => `${API_BASE_URL}/chat/${sessionId}/export-pdf`,
+  insights: `${API_BASE_URL}/insights/initial`,
+  reportPdf: `${API_BASE_URL}/insights/report-pdf`,
 };
